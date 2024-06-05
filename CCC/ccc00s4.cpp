@@ -23,21 +23,15 @@ signed main() {
     for (int i = 0; i < C; i++) {
         for (int j = 0; j < N; j++) {
             if (dp[j] != 5281) {
-                // cout << "branch out from " << j << "\n";
-                // cout << "club: " << clubs[i] << "\n";
                 // try branching out of this explored node
                 int ctr = 1;
                 while (ctr * clubs[i] + j <= N) {
-                    // cout << "setting dp " << ctr * clubs[i] + j << "\n";
-                    // cout << ctr + dp[j] << " " << dp[ctr * clubs[i] + j] << "\n";
                     dp[ctr * clubs[i] + j] = min(ctr + dp[j], dp[ctr * clubs[i] + j]);
                     ++ctr;
                 }
             }
         }
     }
-
-    // for (int i = 0; i < N; i++) cout << dp[i] << "\n";
 
     if (dp[N] == 5281) cout << "Roberta acknowledges defeat.";
     else cout << "Roberta wins in " << dp[N] << " strokes.";
