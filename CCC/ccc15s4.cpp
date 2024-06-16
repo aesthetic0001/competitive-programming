@@ -8,23 +8,23 @@ char _;
 
 int K, N, M, A, B;
 vector<tuple<int, int, int>> adj[2001];
-priority_queue<pair<int, int>> pq;
-int dist[2001];
+priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<tuple<int, int, int>>> pq;
+int dist[2001][201];
 
 void dijkstra() {
-    dist[A] = 0;
-    pq.push({0, A});
+    dist[A][0] = 0;
+    pq.push({0, A, 0});
 
     while (!pq.empty()) {
-        const auto [d, u] = pq.top(); pq.pop();
+        const auto [d, u, w] = pq.top(); pq.pop();
 
-        if (d > dist[u]) continue;
+        if (d > dist[u][w]) continue;
 
         for (const auto &[v, t, h] : adj[u]) {
-            if (h > 0) continue;
-            if (d + t < dist[v]) {
-                dist[v] = d + t;
-                pq.push({dist[v], v});
+            if (w + h >= K) continue;
+            if (d + t < dist[v][w + h]) {
+                dist[v][w + h] = d + t;
+                pq.push({d + t, v, w + h});
             }
         }
     }
@@ -38,7 +38,9 @@ signed main() {
     cin >> K >> N >> M;
 
     for (int i = 1; i <= N; i++) {
-        dist[i] = INT64_MAX;
+        for (int j = 0; j <= K; j++) {
+            dist[i][j] = INT64_MAX;
+        }
     }
 
     for (int i = 0; i < M; i++) {
@@ -51,12 +53,17 @@ signed main() {
 
     dijkstra();
 
-    if (dist[B] == INT64_MAX) {
-        cout << 1;
-    } else {
-        cout << dist[B];
+    int best = INT64_MAX;
+
+    for (int i = 0; i <= K; i++) {
+        best = min(best, dist[B][i]);
     }
 
+    if (best == INT64_MAX) {
+        cout << -1;
+    } else {
+        cout << best;
+    }
 
     return 0;
 }
