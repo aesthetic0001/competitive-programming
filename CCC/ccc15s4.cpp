@@ -13,7 +13,7 @@ int dist[2001][201];
 
 void dijkstra() {
     dist[A][0] = 0;
-    pq.push({0, A, 0});
+    pq.emplace(forward_as_tuple(0, A, 0));
 
     while (!pq.empty()) {
         const auto [d, u, w] = pq.top(); pq.pop();
@@ -24,7 +24,7 @@ void dijkstra() {
             if (w + h >= K) continue;
             if (d + t < dist[v][w + h]) {
                 dist[v][w + h] = d + t;
-                pq.push({d + t, v, w + h});
+                pq.emplace(forward_as_tuple(d + t, v, w + h));
             }
         }
     }
