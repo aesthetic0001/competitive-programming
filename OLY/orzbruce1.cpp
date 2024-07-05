@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define scan(x) do{while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0');}while(0)
+char _;
+
+double A, B, C;
+
+signed main() {
+    cin.tie(0); cin.sync_with_stdio(0);
+
+    cin >> A >> B >> C; cout << fixed << setprecision(2) << ((A / 40000.f + B/60000.f + C/70000.f) * 60);
+
+    return 0;
+}
