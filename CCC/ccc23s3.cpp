@@ -4,6 +4,7 @@
 using namespace std;
 
 bool ans[2001][2001];
+bool special[2001][2001];
 int N, M, R, C;
 
 signed main() {
@@ -71,11 +72,21 @@ signed main() {
                 ans[i][j] = true;
             }
         }
+        // part i was missing
+        if (R == 0) {
+            for (int i = C; i < M; i++) {
+                special[N - 1][i] = true;
+            }
+        } else if (C == 0) {
+            for (int i = R; i < N; i++) {
+                special[i][M - 1] = true;
+            }
+        }
     }
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
-            cout << (ans[i][j] ? 'b' : 'a');
+            cout << (special[i][j] ? 'c' : (ans[i][j] ? 'b' : 'a'));
         }
         cout << '\n';
     }
