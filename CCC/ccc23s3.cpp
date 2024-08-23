@@ -1,10 +1,8 @@
 #include <bits/stdc++.h>
-#include <cinttypes>
 
 using namespace std;
 
-bool ans[2001][2001];
-bool special[2001][2001];
+bool ans[2001][2001], special = false;
 int N, M, R, C;
 
 signed main() {
@@ -67,26 +65,25 @@ signed main() {
         }
     } else {
         // basic method when interference is not guaranteed
+
+        // messed up on this and did nested to form a rectangle to block off, where I intended only to use a line to block off
         for (int i = R; i < N; i++) {
-            for (int j = C; j < M; j++) {
-                ans[i][j] = true;
-            }
+            ans[i][M - 1] = true;
         }
+
+        for (int i = C; i < M; i++) {
+            ans[N - 1][i] = true;
+        }
+
         // part i was missing
-        if (R == 0) {
-            for (int i = C; i < M; i++) {
-                special[N - 1][i] = true;
-            }
-        } else if (C == 0) {
-            for (int i = R; i < N; i++) {
-                special[i][M - 1] = true;
-            }
+        if (R == 0 || C == 0) {
+            special = true;
         }
     }
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
-            cout << (special[i][j] ? 'c' : (ans[i][j] ? 'b' : 'a'));
+            cout << (special && i == N - 1 && j == M - 1 ? 'c' : (ans[i][j] ? 'b' : 'a'));
         }
         cout << '\n';
     }
