@@ -21,13 +21,9 @@ signed main() {
 
     q.emplace(X);
 
-    int visct = 0;
-
     while (!q.empty()) {
         const int val = q.front(); q.pop();
         const int cur = dp[val];
-
-        visct++;
 
         if (val + 1 <= 100000 && dp[val + 1] > cur + 1) {
             dp[val + 1] = cur + 1;
