@@ -28,5 +28,14 @@ signed main() {
     #endif
     fread(_i,1,INPUT_SIZE,stdin);
 
+    int M; su2(M);
+    string s; ss(s);
+
+    printf("%d %s\n", M, &s);
+
+    PII p = mp(1, 2);
+
+    cout << p.first << " " << p.second << "\n";
+
     return 0;
 }
