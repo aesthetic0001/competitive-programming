@@ -19,8 +19,14 @@ def update(idx, delta):
 def sum(l, r):
     return query(r) - query(l - 1)
 
+# O(NlogN) initialization method
+# for i in range(len(original)):
+#    update(i + 1, original[i])
 
+# O(N) initialization method
 for i in range(len(original)):
-    update(i + 1, original[i])
+    fenwick[i + 1] += original[i]
+    if i + 1 + ((i + 1) & -(i + 1)) < len(fenwick):
+        fenwick[i + 1 + ((i + 1) & -(i + 1))] += fenwick[i + 1]
 
 print(sum(3, 4))
