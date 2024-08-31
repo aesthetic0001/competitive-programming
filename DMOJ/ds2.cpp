@@ -6,7 +6,7 @@
 #ifdef fread_unlocked
 #define fread fread_unlocked
 #endif
-#define INPUT_SIZE (4<<20)
+#define INPUT_SIZE (4<<24)
 int _i0=0;
 char _i[INPUT_SIZE+5];
 #define su(x) do{for(x=_i[_i0++]-48;47<(_=_i[_i0++]);x=x*10+_-48);}while(0)
@@ -25,7 +25,7 @@ using namespace std;
 // weight/edge#, to
 vector<PII> graph[100001];
 vector<int> ans;
-priority_queue<PII, vector<PII>, greater<PII>()> pq;
+priority_queue<PII, vector<PII>, greater<PII>> pq;
 bool vis[100001];
 
 int N, M;
@@ -41,34 +41,36 @@ signed main() {
     for (int i = 1; i <= M; i++) {
       int u, v; su(u); su(v);
 
-      graph[u].eb({i, v});
-      graph[v].eb({i, u});
+      graph[u].emplace_back(i, v);
+      graph[v].emplace_back(i, u);
     }
 
-    pq.em({0, 1});
+    pq.emplace(0, 1);
 
     while (!pq.empty() && ans.size() != N) {
       const auto [weight, top] = pq.top(); pq.pop();
 
       if (vis[top]) continue;
 
+      vis[top] = true;
+
       ans.eb(weight);
 
       for (const auto &[weight, to] : graph[top]) {
         if (!vis[to]) {
-          pq.eb({weight, to});
+          pq.emplace(weight, to);
         }
       }
     }
 
     if (ans.size() != N) {
-        printf("Disconnected Graph")
+        printf("Disconnected Graph");
         return 0;
     }
 
     for (const auto &v : ans) {
       if (v == 0) continue;
-      printf("%lld\n", v);
+      printf("%d\n", v);
     }
 
     return 0;
