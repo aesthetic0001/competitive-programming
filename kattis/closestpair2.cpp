@@ -70,7 +70,7 @@ signed main() {
             st.em(mp(y1, x1));
         }
 
-        printf("%.2lf %.2lf %.2lf %.2lf\n", ans.first.first, ans.first.second, ans.second.first, ans.second.second);
+        printf("%lf %lf %lf %lf\n", ans.first.first, ans.first.second, ans.second.first, ans.second.second);
     }
 
     return 0;
