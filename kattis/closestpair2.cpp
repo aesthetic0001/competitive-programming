@@ -50,8 +50,8 @@ signed main() {
 
             // purge far values
             while (x1 - values[leftmost].first >= bestDist && j > leftmost) {
-                leftmost++;
                 st.erase(mp(values[leftmost].second, values[leftmost].first));
+                leftmost++;
             }
 
             auto ub = st.upper_bound({y1 + bestDist, INFINITY});
