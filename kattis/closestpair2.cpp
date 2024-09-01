@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <cstdio>
 
 // #define int long long
 #ifdef fread_unlocked
@@ -24,7 +23,7 @@ signed main() {
     // x, y
     vector<pair<double, double>> values;
     // y, x
-    set<pair<double, double>, greater<pair<double, double>>> st;
+    set<pair<double, double>> st;
     // pair of x y points
     pair<pair<double, double>, pair<double, double>> ans;
     double bestDist = INFINITY;
@@ -47,20 +46,15 @@ signed main() {
         for (int j = 0; j < sz(values); j++) {
             const auto &[x1, y1] = values[j];
 
-            for (const auto &[y2, x2] : st) {
-                printf("val %lf %lf\n", x2, y2);
-            }
-
-            auto ub = st.upper_bound(mp(y1 + bestDist, INFINITY));
-            auto lb = st.lower_bound(mp(y1 - bestDist, INFINITY));
+            auto lb = st.lower_bound({y1 - sqrt(bestDist), INFINITY});
+            auto ub = st.upper_bound({y1 + sqrt(bestDist), INFINITY});
 
             for (; lb != ub; ++lb) {
                 const auto v = *lb;
                 double dist = pow(v.second - x1, 2) + pow(v.first - y1, 2);
-                printf("%lf %lf SKIBIDI\n", v.first, v.second);
                 if (dist < bestDist) {
                     bestDist = dist;
-                    ans.first = v;
+                    ans.first = mp(v.second, v.first);
                     ans.second = values[j];
                 }
             }
