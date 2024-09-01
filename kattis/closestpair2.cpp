@@ -43,8 +43,16 @@ signed main() {
 
         sort(values.begin(), values.end());
 
+        int leftmost = 0;
+
         for (int j = 0; j < sz(values); j++) {
             const auto &[x1, y1] = values[j];
+
+            // purge far values
+            while (x1 - values[leftmost].first >= sqrt(bestDist) && j > leftmost) {
+                leftmost++;
+                st.erase(mp(values[leftmost].second, values[leftmost].first));
+            }
 
             auto lb = st.lower_bound({y1 - sqrt(bestDist), INFINITY});
             auto ub = st.upper_bound({y1 + sqrt(bestDist), INFINITY});
