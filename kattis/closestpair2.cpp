@@ -49,21 +49,21 @@ signed main() {
             const auto &[x1, y1] = values[j];
 
             // purge far values
-            while (x1 - values[leftmost].first >= sqrt(bestDist) && j > leftmost) {
+            while (x1 - values[leftmost].first >= bestDist && j > leftmost) {
                 leftmost++;
                 st.erase(mp(values[leftmost].second, values[leftmost].first));
             }
 
-            auto lb = st.lower_bound({y1 - sqrt(bestDist), INFINITY});
-            auto ub = st.upper_bound({y1 + sqrt(bestDist), INFINITY});
+            auto ub = st.upper_bound({y1 + bestDist, INFINITY});
+            auto lb = st.lower_bound({y1 - bestDist, INFINITY});
 
             for (; lb != ub; ++lb) {
-                const auto v = *lb;
-                double dist = pow(v.second - x1, 2) + pow(v.first - y1, 2);
+                const auto &[y2, x2] = *lb;
+                double dist = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
                 if (dist < bestDist) {
                     bestDist = dist;
-                    ans.first = mp(v.second, v.first);
-                    ans.second = values[j];
+                    ans.first = mp(x2, y2);
+                    ans.second = mp(x1, y1);
                 }
             }
 
