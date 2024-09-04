@@ -77,6 +77,8 @@ signed main() {
         }
     }
 
+    printf("%lld %lld\n", L, R);
+
     compute(L);
 
     printf("%lld", best);
