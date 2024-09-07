@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <tuple>
 
 // #define int long long
 #ifdef fread_unlocked
@@ -16,7 +17,7 @@ using namespace std;
 int sigma1[1501][1501], sigma2[1501][1501], alpha[1501][1501];
 int N, M, K;
 vector<tuple<int, int, int>> skibidi;
-queue<PII> enigma;
+queue<tuple<int, int, int, int>> enigma;
 
 signed main() {
     #ifdef LOCAL
@@ -40,37 +41,40 @@ signed main() {
 
     for (const auto &[_, y, x] : skibidi) {
         alpha[y][x] = 0;
-        enigma.em(mp(y, x));
+        enigma.em(forward_as_tuple(y, x, y, x));
+    }
 
-        while (!enigma.empty()) {
-            const auto [cy, cx] = enigma.front(); enigma.pop();
-            const int newD = alpha[cy][cx] + 1;
+    while (!enigma.empty()) {
+        const auto [y, x, cy, cx] = enigma.front(); enigma.pop();
 
-            if (newD > K) continue;
+        // printf("cur: %d %d\n", cy, cx);
 
-            if (cy - 1 >= 0 && sigma1[cy - 1][cx] == 0 && newD < alpha[cy - 1][cx]) {
-                sigma2[cy - 1][cx] = sigma1[y][x];
-                alpha[cy - 1][cx] = newD;
-                enigma.em(mp(cy - 1, cx));
-            }
+        const int newD = alpha[cy][cx] + 1;
 
-            if (cy + 1 < N && sigma1[cy + 1][cx] == 0 && newD < alpha[cy + 1][cx]) {
-                sigma2[cy + 1][cx] = sigma1[y][x];
-                alpha[cy + 1][cx] = newD;
-                enigma.em(mp(cy + 1, cx));
-            }
+        if (newD > K) continue;
 
-            if (cx - 1 >= 0 && sigma1[cy][cx - 1] == 0 && newD < alpha[cy][cx - 1]) {
-                sigma2[cy][cx - 1] = sigma1[y][x];
-                alpha[cy][cx - 1] = newD;
-                enigma.em(mp(cy, cx - 1));
-            }
+        if (cy - 1 >= 0 && sigma1[cy - 1][cx] == 0 && newD < alpha[cy - 1][cx]) {
+            sigma2[cy - 1][cx] = sigma1[y][x];
+            alpha[cy - 1][cx] = newD;
+            enigma.em(forward_as_tuple(y, x, cy - 1, cx));
+        }
 
-            if (cx + 1 < M && sigma1[cy][cx + 1] == 0 && newD < alpha[cy][cx + 1]) {
-                sigma2[cy][cx + 1] = sigma1[y][x];
-                alpha[cy][cx + 1] = newD;
-                enigma.em(mp(cy, cx + 1));
-            }
+        if (cy + 1 < N && sigma1[cy + 1][cx] == 0 && newD < alpha[cy + 1][cx]) {
+            sigma2[cy + 1][cx] = sigma1[y][x];
+            alpha[cy + 1][cx] = newD;
+            enigma.em(forward_as_tuple(y, x, cy + 1, cx));
+        }
+
+        if (cx - 1 >= 0 && sigma1[cy][cx - 1] == 0 && newD < alpha[cy][cx - 1]) {
+            sigma2[cy][cx - 1] = sigma1[y][x];
+            alpha[cy][cx - 1] = newD;
+            enigma.em(forward_as_tuple(y, x, cy, cx - 1));
+        }
+
+        if (cx + 1 < M && sigma1[cy][cx + 1] == 0 && newD < alpha[cy][cx + 1]) {
+            sigma2[cy][cx + 1] = sigma1[y][x];
+            alpha[cy][cx + 1] = newD;
+            enigma.em(forward_as_tuple(y, x, cy, cx + 1));
         }
     }
 
