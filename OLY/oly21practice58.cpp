@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <cassert>
 
 #define int long long
 #ifdef fread_unlocked
@@ -35,13 +36,14 @@ signed main() {
         const int top = q.front(); q.pop();
         pathSz++;
 
+        vis[top] = true;
+
         if (vis[to[top]]) {
             cycleSz = dis[top] - dis[to[top]] + 1;
             cycleStart = to[top];
             break;
         }
 
-        vis[top] = true;
         if (dis[top] + 1 < dis[to[top]]) {
             dis[to[top]] = dis[top] + 1;
             q.em(to[top]);
@@ -49,6 +51,11 @@ signed main() {
     }
 
     pathSz--;
+
+    if (pathSz == 0) {
+        printf("%lld", (int)1);
+        return 0;
+    }
 
     if (K < pathSz - cycleSz) {
         for (int i = 1; i <= N; i++) {
