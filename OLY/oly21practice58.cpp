@@ -14,7 +14,7 @@
 
 using namespace std;
 
-int N, K, cycleStart, cycleSz, pathSz = 0, to[200001], vis[200001], dis[200001];
+int N, K, cycleStart, cycleSz, pathSz = 0, to[200001], dis[200001];
 queue<int> q;
 
 signed main() {
@@ -36,9 +36,7 @@ signed main() {
         const int top = q.front(); q.pop();
         pathSz++;
 
-        vis[top] = true;
-
-        if (vis[to[top]]) {
+        if (dis[to[top]] != INT32_MAX) {
             cycleSz = dis[top] - dis[to[top]] + 1;
             cycleStart = to[top];
             break;
