@@ -36,14 +36,12 @@ signed main() {
         pathSz++;
 
         if (vis[to[top]]) {
-            // printf("cycle detected at %lld to %lld: size of %lld\n", top, to[top], dis[top] - dis[to[top]] + 1);
             cycleSz = dis[top] - dis[to[top]] + 1;
             cycleStart = to[top];
             break;
         }
 
         vis[top] = true;
-        // printf("vis %lld\n", top);
         if (dis[top] + 1 < dis[to[top]]) {
             dis[to[top]] = dis[top] + 1;
             q.em(to[top]);
@@ -52,14 +50,7 @@ signed main() {
 
     pathSz--;
 
-    // printf("path sz: %lld | cycle sz: %lld | start: %lld\n", pathSz, cycleSz, cycleStart);
-
-    // for (int i = 1; i <= N; i++) {
-    //     printf("%lld: %lld\n", i, dis[i]);
-    // }
-
     if (K < pathSz - cycleSz) {
-        // printf("sigma? %lld %lld\n", K, pathSz - cycleSz);
         for (int i = 1; i <= N; i++) {
             if (dis[i] == K) {
                 printf("%lld", i);
@@ -68,11 +59,9 @@ signed main() {
         }
     } else {
         K -= pathSz - cycleSz;
-        K %= 3;
+        K %= cycleSz;
 
         if (K == 0) K = cycleSz;
-
-        // printf("skibidi: %lld want %lld\n", K, dis[cycleStart] + K - 1);
 
         for (int i = 1; i <= N; i++) {
             if (dis[i] == dis[cycleStart] + K - 1) {
