@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, M, K, initial[100001], ans[100001];
+int N, M, K, initial[100001], to[100001], ans[100001];
 // disjoint set for cycle size counting
 int p[100001], setsz[100001];
 unordered_set<int> graphs;
@@ -27,7 +27,7 @@ void jn(int a, int b) {
     int pA = qu(a), pB = qu(b);
 
     if (pA == pB) {
-        printf("tried to join same parent sets: %d %d\n", a, b);
+        // printf("tried to join same parent sets: %d %d\n", a, b);
         return;
     }
 
@@ -58,13 +58,13 @@ signed main() {
         int L, R;
         scanf("%d %d", &L, &R);
 
-        printf("iter #%d\n", i + 1);
+        // printf("iter #%d\n", i + 1);
 
         for (int j = L; j < L + floor((double)(R - L + 1) / (double)2); j++) {
             int newLeft = initial[R - (j - L)];
             int newRight = initial[j];
 
-            printf("swapping %d with %d\n", j, R - (j - L));
+            // printf("swapping %d with %d\n", j, R - (j - L));
 
             initial[j] = newLeft;
             initial[R - (j - L)] = newRight;
@@ -73,30 +73,44 @@ signed main() {
         }
     }
 
+    for (int i = 1; i <= N; i++) {
+        // printf("%d goes to %d\n", initial[i], i);
+        to[initial[i]] = i;
+    }
+
     // this only goes through every single node once
     // maximum O(N + K MOD(200))
     for (const auto &p : graphs) {
-        int offset = setsz[p] % K;
+        int offset = K % setsz[p];
         int startNode = p;
 
         for (int i = 0; i < offset; i++) {
-            startNode = initial[p];
+            startNode = to[startNode];
         }
 
-        printf("%d: %d start at %d\n", p, setsz[p], startNode);
+        // int temp = p;
+
+        // for (int i = 0; i < setsz[p]; i++) {
+        //     printf("%d ", temp);
+        //     temp = to[temp];
+        // }
+
+        // printf("\n");
+
+        // printf("%d: setsz %d | offset %d | start at %d\n", p, setsz[p], offset, startNode);
 
         int curNode = startNode;
         int ref = p;
 
         for (int i = 0; i < setsz[p]; i++) {
             ans[curNode] = ref;
-            curNode = initial[curNode];
-            ref = initial[ref];
+            curNode = to[curNode];
+            ref = to[ref];
         }
     }
 
     for (int i = 1; i <= N; i++) {
-        printf("%d", ans[i]);
+        printf("%d\n", ans[i]);
     }
 
     return 0;
