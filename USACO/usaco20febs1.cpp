@@ -2,7 +2,7 @@
 #include <cinttypes>
 using namespace std;
 
-int N, M, K, initial[100001], to[100001], vis[100001], ans[100001];
+int N, M, K, initial[100001], to[100001], ans[100001];
 
 signed main() {
     #ifdef LOCAL
@@ -34,18 +34,14 @@ signed main() {
     // this only goes through every single node once
     // maximum O(N + K MOD(200))
     for (int p = 1; p <= N; p++) {
-        if (vis[p]) continue;
+        if (ans[p]) continue;
         int setsz = 1;
         int cur = p;
-        vis[p] = true;
 
         while (to[cur] != p) {
             setsz++;
             cur = to[cur];
-            vis[cur] = true;
         }
-
-        // printf("sz: %d\n", setsz);
 
         int offset = K % setsz;
         cur = p;
