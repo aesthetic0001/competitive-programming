@@ -40,6 +40,7 @@ signed main() {
     }
 
     // idea: get all nodes from N, find closest colors and second colors, then final bfs from 1 to compare distance
+    // the idea is that if they both land on same closest color, we can just fall back to second closest color to get closest distance
     q.em(N);
     dis[N] = 0;
 
@@ -75,6 +76,9 @@ signed main() {
             if (first[color].first != top) {
                 // best case for this color
                 ans = min(ans, first[color].second + dis2[top]);
+            } else if (second[color].first != 0) {
+                // use the alternative
+                ans = min(ans, second[color].second + dis2[top]);
             }
         }
 
