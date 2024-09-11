@@ -13,9 +13,10 @@
 
 using namespace std;
 
-int M, N, c[1000001], dis[1000001][2];
-queue<PII> q;
-unordered_set<int> graph[1000001];
+int M, N, ans = INT32_MAX, c[1000001], dis[1000001], dis2[1000001];
+PII first[1000001], second[1000001];
+queue<int> q;
+vector<int> graph[1000001];
 
 signed main() {
     #ifdef LOCAL
@@ -26,39 +27,66 @@ signed main() {
 
     for (int i = 1; i <= N; i++) {
         scanf("%d", &c[i]);
-        dis[i][0] = INT32_MAX;
-        dis[i][1] = INT32_MAX;
+        dis[i] = INT32_MAX;
+        dis2[i] = INT32_MAX;
+        first[i] = mp(0, INT32_MAX);
+        second[i] = mp(0, INT32_MAX);
     }
 
     for (int i = 0; i < M; i++) {
         int a, b; scanf("%d %d", &a, &b);
-        graph[c[a]].emplace(c[b]);
-        graph[c[b]].emplace(c[a]);
+        graph[a].eb(b);
+        graph[b].eb(a);
     }
 
-    dis[c[1]][graph[c[1]].size() >= 2 ? 1 : 0] = 0;
-    q.em(mp(c[1], graph[c[1]].size() >= 2 ? 1 : 0));
+    // idea: get all nodes from N, find closest colors and second colors, then final bfs from 1 to compare distance
+    q.em(N);
+    dis[N] = 0;
 
     while (!q.empty()) {
-        const auto [node, valid] = q.front(); q.pop();
-        const int dist = dis[node][valid];
-        int newValid = valid == 1 ? 1 : (graph[node].size() >= 2 ? 1 : 0);
+        const int top = q.front(); q.pop();
 
-        // printf("visit %d: dis %d, valid: %d\n", node, dist, valid);
+        if (first[c[top]].first == 0) {
+            // best distance found
+            first[c[top]] = mp(top, dis[top]);
+        } else if (second[c[top]].first == 0) {
+            // second best distance
+            second[c[top]] = mp(top, dis[top]);
+        }
 
-        for (const auto &v : graph[node]) {
-            if (dist + 1 < dis[v][newValid]) {
-                dis[v][newValid] = dist + 1;
-                q.em(mp(v, newValid));
+        for (const auto &adj : graph[top]) {
+            if (dis[top] + 1 < dis[adj]) {
+                dis[adj] = dis[top] + 1;
+                q.em(adj);
             }
         }
     }
 
-    if (dis[c[N]][1] != INT32_MAX) {
-        printf("%d", dis[c[N]][1]);
-    } else {
-        printf("-1");
+    // final bfs from 1
+    q.em(1);
+    dis2[1] = 0;
+
+    while (!q.empty()) {
+        const int top = q.front(); q.pop();
+
+        const int color = c[top];
+
+        if (first[color].first != 0) {
+            if (first[color].first != top) {
+                // best case for this color
+                ans = min(ans, first[color].second + dis2[top]);
+            }
+        }
+
+        for (const auto &adj : graph[top]) {
+            if (dis2[top] + 1 < dis2[adj]) {
+                dis2[adj] = dis2[top] + 1;
+                q.em(adj);
+            }
+        }
     }
+
+    printf("%d", (ans == INT32_MAX ? -1 : ans));
 
     return 0;
 }
