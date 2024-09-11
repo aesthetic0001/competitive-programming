@@ -13,23 +13,7 @@
 
 using namespace std;
 
-int N, table[101][101];
-
-bool check() {
-    bool ok = true;
-
-    for (int j = 0; j < N; j++) {
-        int prev = table[0][j];
-        if (!ok) break;
-        for (int i = 0; i < N; i++) {
-            if (prev > table[i][j] || (j > 0 && table[i][j - 1] >= table[i][j])) {
-                ok = false;
-                break;
-            }
-        }
-    }
-    return ok;
-}
+int N, smallest = INT32_MAX, table[101][101];
 
 signed main() {
     #ifdef LOCAL
@@ -41,11 +25,12 @@ signed main() {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             scanf("%d", &table[i][j]);
+            smallest = min(table[i][j], smallest);
         }
     }
 
     while (true) {
-        if (check()) break;
+        if (table[0][0] == smallest) break;
         int temp[101][101];
 
         for (int i = 0; i < N; i++) {
