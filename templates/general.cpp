@@ -5,10 +5,6 @@
 #define fread fread_unlocked
 #endif
 
-#define eb(a) emplace_back(a)
-#define em(a) emplace(a)
-#define sz(v) (v).size()
-#define mp(a, b) make_pair(a, b)
 #define PII pair<int, int>
 
 using namespace std;
