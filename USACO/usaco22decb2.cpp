@@ -6,6 +6,9 @@ int T, N, K;
 char ans[100001];
 
 signed main() {
+  #ifdef LOCAL
+  freopen("sample.in","r",stdin);
+  #endif
   scanf("%d", &T);
 
   for (int i = 0; i < T; i++) {
@@ -24,12 +27,18 @@ signed main() {
       if (s[j] == 'G') {
         if (abs(lastG - j) > K) {
           lastG = min(N - 1, j + K);
+          if (ans[lastG] != '.') {
+              ans[lastG - 1] = ans[lastG];
+          }
           ans[lastG] = 'G';
           a++;
         }
       } else {
           if (abs(lastH - j) > K) {
             lastH = min(N - 1, j + K);
+            if (ans[lastH] != '.') {
+                ans[lastH - 1] = ans[lastH];
+            }
             ans[lastH] = 'H';
             a++;
           }
