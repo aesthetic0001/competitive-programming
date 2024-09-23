@@ -1,0 +1,17 @@
+if (grid[x + 1][y]) {
+              grid[x + 1][y] = false;
+              q.emplace(make_pair(x + 1, y));
+            }
+            if (grid[x - 1][y]) {
+              grid[x - 1][y] = false;
+              q.emplace(make_pair(x - 1, y));
+            }
+            if (grid[x][y + 1]) {
+              grid[x][y + 1] = false;
+              q.emplace(make_pair(x, y + 1));
+            }
+            if (grid[x][y - 1]) {
+              grid[x][y - 1] = false;
+              q.emplace(make_pair(x, y - 1));
+            }
+
