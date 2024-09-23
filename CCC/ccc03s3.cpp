@@ -65,7 +65,11 @@ signed main() {
       ct += 1;
     }
 
-    printf("%d rooms, %d square metre(s) left over", ct, N);
+    if (ct == 1) {
+      printf("1 room, %d square metre(s) left over", N);
+    } else {
+      printf("%d rooms, %d square metre(s) left over", ct, N);
+    }
 
     return 0;
 }
