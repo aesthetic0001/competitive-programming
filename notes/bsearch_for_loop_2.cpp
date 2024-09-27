@@ -19,7 +19,7 @@ int bsearchSqrt(int n) {
   // this works, because the total area that needs to be covered is at most 2 jumps (the jump size is equal to half of the total search area)
   for (int jumpsz = n / 2; jumpsz >= 1; jumpsz /= 2) {
     printf("jumpsz: %d at %d\n", jumpsz, idx);
-    while (idx - jumpsz <= n && monotonic(idx - jumpsz, n)) {
+    while (idx - jumpsz >= 0 && monotonic(idx - jumpsz, n)) {
       idx -= jumpsz;
       printf("jumping to %d\n", idx);
     }
