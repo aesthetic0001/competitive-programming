@@ -11,19 +11,16 @@
 using namespace std;
 
 unordered_set<int> graph[200001];
-vector<PII> ans[200001];
-bool vis[200001];
+vector<PII> ans;
 int N;
 
-void skibidi(int root, int node, int grandparent, bool flag = true) {
-  // printf("vis %d p %d\n", node, grandparent);
-  if (flag && root != node) {
-    ans[root].emplace_back(make_pair(node, grandparent));
-  }
-  vis[node] = true;
+void skibidi(int node, int parent, bool flag = false) {
   for (const auto &v : graph[node]) {
-    if (vis[v]) continue;
-    skibidi(root, v, (flag ? node : grandparent), !flag);
+    if (v == parent) continue;
+    if (flag) {
+      ans.emplace_back(make_pair(parent, v));
+    }
+    skibidi(v, node, !flag);
   }
 }
 
@@ -40,25 +37,20 @@ signed main() {
       graph[v].emplace(u);
     }
 
-    int k = graph[1].size() + 1;
+    printf("%d\n", graph[1].size() + 1);
 
-    printf("%d\n", k);
-
-    skibidi(1, 1, 1);
-
-    printf("%d\n", ans[1].size() + 1);
-
-    for (const auto &[u, v] : ans[1]) {
+    ans.clear();
+    skibidi(1, 1);
+    printf("%d\n", ans.size() + 1);
+    for (const auto &[u, v] : ans) {
       printf("%d %d\n", u, v);
     }
 
     for (const auto &adj : graph[1]) {
-      for (int i = 0; i <= 200000; i++) {
-        vis[i] = false;
-      }
-      skibidi(adj, adj, adj);
-      printf("%d\n", ans[adj].size() + 1);
-      for (const auto &[u, v] : ans[adj]) {
+      ans.clear();
+      skibidi(adj, 1);
+      printf("%d\n", ans.size() + 1);
+      for (const auto &[u, v] : ans) {
         printf("%d %d\n", u, v);
       }
     }
