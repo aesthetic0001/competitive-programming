@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
+#include <unordered_map>
 
-// #define int long long
+// #define int unsigned long long
 #ifdef fread_unlocked
 #define fread fread_unlocked
 #endif
@@ -10,32 +11,12 @@
 using namespace std;
 
 int N;
-unordered_set<char> letters, graph[26];
-bool vis[26];
-vector<char> ans;
+unordered_set<char> letters, vis;
+unordered_map<char, unordered_set<char>> graph;
+unordered_map<char, int> in;
 vector<string> words;
+string ans;
 queue<char> q;
-
-int bfs(char source, char target) {
-  for (int i = 0; i < 26; i++) {
-    vis[i] = false;
-  }
-  q.emplace(source);
-  while (!q.empty()) {
-    const auto top = q.front(); q.pop();
-    // printf("vis %c from %c\n", top, source);
-    // source > target
-    if (top == target) return 1;
-    for (const auto &adj : graph[int(top - 'a')]) {
-      // printf("adj of %c: %c\n", adj, top);
-      if (adj == source) return -1;
-      if (vis[int(adj - 'a')]) continue;
-      vis[int(adj - 'a')] = true;
-      q.emplace(adj);
-    }
-  }
-  return 0;
-}
 
 signed main() {
     #ifdef LOCAL
@@ -51,11 +32,9 @@ signed main() {
       words.emplace_back(s);
       for (const auto &c : s) {
         letters.emplace(c);
+        in[c] = 0;
       }
-      // cout << s << '\n';
     }
-
-    // cout << "end\n";
 
     for (int i = 0; i < words.size(); i++) {
       string &higher = words[i];
@@ -64,51 +43,61 @@ signed main() {
         int ct = 0;
         while (ct < min(higher.size(), lower.size()) && higher[ct] == lower[ct]) {
           ct++;
-        }
-        if (ct == min(higher.size(), lower.size()) && higher[ct - 1] == lower[ct - 1] && lower.size() > higher.size()) {
-          printf("!");
-          return 0;
-        }
-        if (ct < higher.size() && ct < lower.size()) {
-          // printf("valid relation: %c %c\n", higher[ct], lower[ct]);
-          graph[int(higher[ct] - 'a')].emplace(lower[ct]);
+        } 
+        if (ct < higher.size() && ct < lower.size() && graph[higher[ct]].find(lower[ct]) == graph[higher[ct]].end()) {
+          // printf("relation between %c and %c\n", higher[ct], lower[ct]);
+          graph[higher[ct]].emplace(lower[ct]);
+          in[lower[ct]] += 1;
         }
       }
     }
 
-    // no possibilities case
-    for (const auto &c : letters) {
-      if (bfs(c, 'A') == -1) {
-        printf("!");
-        return 0;
+    // perform toposort
+    for (const auto &[c, indeg] : in) {
+      // printf("%c %d\n", c, indeg);
+      if (indeg == 0) {
+        q.emplace(c);
       }
     }
 
-    for (const auto &a : letters) {
-      for (const auto &b : letters) {
-        if (a == b) continue;
-        if (bfs(a, b) == 0 && bfs(b, a) == 0) {
-          // printf("indeterminate relationship: %c %c\n", a, b);
-          printf("?");
-          return 0;
+    // no starting point. cyclic
+    if (q.size() == 0) {
+      cout << '!';
+      return 0;
+    }
+    // ambiguous starting point
+    if (q.size() > 1) {
+      cout << '?';
+      return 0;
+    }
+
+    while (!q.empty()) {
+      const auto top = q.front(); q.pop();
+      bool done = false;
+
+      ans += top;
+
+      for (const auto &adj : graph[top]) {
+        in[adj] -= 1;
+        if (in[adj] == 0) {
+          if (done) {
+            // ambiguous next node
+            cout << '?';
+            return 0;
+          }
+          q.emplace(adj);
+          done = true;
         }
       }
     }
-
-    for (const auto &c : letters) {
-      ans.emplace_back(c);
+    
+    // indeterminate
+    if (ans.size() != letters.size()) {
+      cout << '!';
+      return 0;
     }
 
-    // at this point, it is valid. we just need to sort.
-    sort(ans.begin(), ans.end(), [](auto a, auto b) {
-        bool res = (bfs(a, b) == 1);
-        printf("%c %c res: %d\n", a, b, res);
-        return res;
-    });
-
-    for (const auto &c : ans) {
-      printf("%c", c);
-    }
+    cout << ans;
 
     return 0;
 }
