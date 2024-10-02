@@ -45,7 +45,7 @@ signed main() {
           ct++;
         }
         if (ct < higher.size() && ct < lower.size() && graph[higher[ct]].find(lower[ct]) == graph[higher[ct]].end()) {
-          printf("relation between %c and %c\n", higher[ct], lower[ct]);
+          // printf("relation between %c and %c\n", higher[ct], lower[ct]);
           graph[higher[ct]].emplace(lower[ct]);
           in[lower[ct]] += 1;
         }
@@ -56,7 +56,7 @@ signed main() {
     for (const auto &[c, indeg] : in) {
       // printf("%c %d\n", c, indeg);
       if (indeg == 0) {
-        cout << "potentially start at " << c << '\n';
+        // cout << "potentially start at " << c << '\n';
         q.emplace(c);
       }
     }
