@@ -43,20 +43,25 @@ signed main() {
         int ct = 0;
         while (ct < min(higher.size(), lower.size()) && higher[ct] == lower[ct]) {
           ct++;
-        }
+        } 
         if (ct < higher.size() && ct < lower.size() && graph[higher[ct]].find(lower[ct]) == graph[higher[ct]].end()) {
-          // printf("relation between %c and %c\n", higher[ct], lower[ct]);
           graph[higher[ct]].emplace(lower[ct]);
           in[lower[ct]] += 1;
         }
+        // If one of the words is the beginning of the other word, the first word is lexicographically before the second word
+        // ie: lower should not be the word at the beginning, and thus higher must be shorter than or equal to lower
+        if (ct == min(higher.size(), lower.size()) && higher.size() > lower.size()) {
+            cout << "!";
+            return 0;
+        }
       }
     }
+    
+    bool multi = false;
 
     // perform toposort
     for (const auto &[c, indeg] : in) {
-      // printf("%c %d\n", c, indeg);
       if (indeg == 0) {
-        // cout << "potentially start at " << c << '\n';
         q.emplace(c);
       }
     }
@@ -66,14 +71,11 @@ signed main() {
       cout << '!';
       return 0;
     }
-    // ambiguous starting point
-    if (q.size() > 1) {
-      cout << '?';
-      return 0;
-    }
+    
+    multi = q.size() > 1;
 
     while (!q.empty()) {
-      const auto top = q.front(); q.pop();
+      const auto top = q.front(); q.pop(); 
       bool done = false;
 
       ans += top;
@@ -97,9 +99,13 @@ signed main() {
       cout << '!';
       return 0;
     }
+    
+    if (multi) {
+        cout << '?';
+        return 0;
+    }
 
     cout << ans;
 
     return 0;
 }
-
