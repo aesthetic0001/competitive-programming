@@ -93,7 +93,7 @@ signed main() {
         }
       }
     }
-    
+
     // indeterminate
     if (ans.size() != letters.size()) {
       cout << '!';
