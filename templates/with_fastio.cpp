@@ -6,19 +6,24 @@
 #ifdef fread_unlocked
 #define fread fread_unlocked
 #endif
-#define INPUT_SIZE (4<<20)
-int _i0=0;
-char _i[INPUT_SIZE+5];
-#define su(x) do{for(x=_i[_i0++]-48;47<(_=_i[_i0++]);x=x*10+_-48);}while(0)
-#define si(x) do{_n=_i[_i0++];if(_n-45)x=_n;else x=_i[_i0++];for(x-=48;47<(_=_i[_i0++]);x=x*10+_-48);if(_n<46)x=-x;}while(0)
-#define ss(x) do{int i=0; while((_=_i[_i0++])<=32); for(; _>32; _= _i[_i0++]) x[i++]=_; x[i]='\0';}while(0)
-char _,_n;
 
-#define eb(a) emplace_back(a)
-#define em(a) emplace(a)
-#define sz(v) (v).size()
-#define mp(a, b) make_pair(a, b)
-#define PII pair<int, int>
+#define gc _buf[_ii++]
+#define pc(x) _buf[_oi++] = x
+#define readBuf() fread(_buf, 1, IO_SZ, stdin)
+#define writeBuf() fwrite(_buf, 1, _oi, stdout)
+
+const int IO_SZ = 8 << 20;
+char _buf[IO_SZ], _tmp[20];
+int _ii, _oi;
+char _;
+template <typename T> inline void scan(T &x){x=gc-'0'; while((_=gc)>='0') x=x*10+_-'0';}
+template <typename T> inline void print(T x){_=0; do{_tmp[_++]=x%10;} while(x/=10); while(_) pc(_tmp[--_]+'0');}
+
+template <typename T, typename... Args>
+void scan(T &t, Args &...args){
+    scan(t);
+    scan(args...);
+}
 
 using namespace std;
 
@@ -26,7 +31,6 @@ signed main() {
     #ifdef LOCAL
     freopen("sample.in","r",stdin);
     #endif
-    fread(_i,1,INPUT_SIZE,stdin);
 
     return 0;
 }
