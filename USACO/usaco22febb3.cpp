@@ -14,17 +14,27 @@ bool active[4];
 string blocks[4];
 string perm = "";
 
-bool recurse(string &target, int idx) {
+bool recurse(string &target, int idx) { 
   bool flag = false;
 
-  for (int i = 0; i < 6; i++) 
-
   active[idx] = true;
-  perm += ""
 
-  for (int i = 0; i < 4; i++) {
-    if (!active[i]) {
-      flag = recurse(target, i) || flag;
+  for (int i = 0; i < 6; i++) {
+    perm += blocks[idx][i];
+    flag = (perm == target) || flag;
+    for (int other = 0; other < 4; other++) {
+      if (active[other]) {
+        continue;
+      }
+      /*printf("vis %d from %d\n", other, idx);*/
+      flag = recurse(target, other) || flag;
+      if (flag) {
+        break;
+      }
+    }
+    perm.erase(perm.length() - 1);
+    if (flag) {
+      break;
     }
   }
 
@@ -46,7 +56,18 @@ signed main() {
 
     for (int i = 0; i < N; i++) {
       string s; cin >> s;
-      for (int)
+      bool flag = false;
+      for (int j = 0; j < 4; j++) {
+        flag = recurse(s, j) || flag;
+        if (flag) {
+          break;
+        }
+      }
+      if (flag) {
+        printf("YES\n");
+      } else {
+        printf("NO\n");
+      }
     }
 
     return 0;
