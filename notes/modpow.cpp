@@ -1,10 +1,9 @@
 #include <iostream>
 
 #define MOD 1000000007
-#define INT long long
+#define int long long
 
 int modPow(int a, int b) {
-  printf("%d %d\n", a, b);
     if (b == 0) {
         return 1;
     } else {
@@ -17,6 +16,6 @@ int modPow(int a, int b) {
 }
 
 signed main() {
-    std::cout << modPow(2, 3);
+    std::cout << modPow(31, MOD - 2);
     return 0;
 }
