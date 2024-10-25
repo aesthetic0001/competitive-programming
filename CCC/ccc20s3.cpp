@@ -11,27 +11,12 @@ using namespace std;
 
 string N, H;
 unordered_set<int> vis;
-int need[26], cur[26];
-int rolling[200001], rolling2[200001];
-int MOD = 1000000007, base = 31, base2 = 29;
-
-inline int modpow(int a, int b) {
-  if (b == 0) {
-    return 1;
-  }
-  int ans = modpow((a * a) % MOD, b / 2);
-  if (b % 2 == 1) {
-    ans = (ans * a) % MOD;
-  }
-  return ans % MOD;
-}
+int need[26], cur[26], r1[200001], r2[200001], p1[200000], p2[200000], MOD = 1000000007, base = 31, base2 = 29;
 
 inline int h_substr(int l, int r) {
-  int rel = ((rolling[r + 1] - rolling[l]) % MOD + MOD) % MOD;
-  int rel2 = ((rolling2[r + 1] - rolling2[l]) % MOD + MOD) % MOD;
-  int off = modpow(base, H.size() - l);
-  int off2 = modpow(base2, H.size() - l);
-  return ((rel2 * off2 % MOD) << 31) | (rel * off % MOD);
+  int h1 = ((r1[r + 1] - r1[l]) * p1[H.size() - l] % MOD + MOD) % MOD;
+  int h2 = ((r2[r + 1] - r2[l]) * p2[H.size() - l] % MOD + MOD) % MOD;
+  return h1 ^ (h2 << 31);
 }
 
 inline void check(int l) {
@@ -45,12 +30,12 @@ inline void check(int l) {
   vis.emplace(hash);
 }
 
-inline void polyhash(int base, int* rolling) {
-  int power = 1;
+inline void polyhash(int base, int* rolling, int* powers) {
+  powers[0] = 1;
   for (int i = 0; i < H.size(); i++) {
-    int charhash = (power * (H[i] - 'a' + 1)) % MOD;
+    int charhash = (powers[i] * (H[i] - 'a' + 1)) % MOD;
     rolling[i + 1] = (rolling[i] + charhash) % MOD;
-    power = (power * base) % MOD;
+    powers[i + 1] = (powers[i] * base) % MOD;
   }
 }
 
@@ -76,8 +61,8 @@ signed main() {
       cur[H[i] - 'a'] += 1;
     }
 
-    polyhash(base, rolling);
-    polyhash(base2, rolling2);
+    polyhash(base, r1, p1);
+    polyhash(base2, r2, p2);
 
     check(0);
 
@@ -91,4 +76,3 @@ signed main() {
 
     return 0;
 }
-
