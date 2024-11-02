@@ -1,56 +1,135 @@
+/*
+    Author: Dr. Owen Chen
+    Datetime: 2023-12-16 09:57
+    USACO 2023 December Contest, Bronze
+    Problem 2. Cowntact Tracing 2
+    http://www.usaco.org/index.php?page=viewproblem2&cpid=1348
+    
+    Dr. Chen's Analysis
+    - Consider corner cases first
+        - corner case 1: all infected
+        - corner case 2: 0, 1 or 2 infected
+    - General case: 3 or more infected:
+        - bacteria started from the left side
+        - get cows infected from the left side:
+            left = # of cows infected on the left
+        - bacteria started from the right side:
+            right = # of cows infected on the right
+        - bacteria started in the middle:
+                min_infected = 0;
+                int growth = 2*min_nights + 1;
+                if (left > 0) {
+                    min_infected += div_ceil(left, growth);
+                }
+                if (right > 0) {
+                    min_infected += div_ceil(right, growth);
+                }
+                for (int i : middles){
+                    min_infected += div_ceil(i, growth);
+                }
+    - Integer ceilling division:
+        [a/b] = (a + b - 1) / b
+
+    Complexity:
+        O(N)
+        
+    https://github.com/owenjchen/usaco/blob/main/bronze_2023Dec/usaco2023b_dec_p2.cpp
+*/
 #include <bits/stdc++.h>
-
 using namespace std;
-#define ms(x, a) memset(x, a, sizeof x)
-typedef long long ll;
-const int mod = 1e9 + 7, inf = 0x3f3f3f3f;
-const int MN = 101;
 
-string a[MN];
-vector<int> adj[MN];
-int deg[MN];
-set<int> seen;
-vector<int> ans;
+// ceiling division ceil (a/b) = floor (a+b-1)/b
+int div_ceil(int a, int b) {
+    return (a + b - 1) / b;
+}
 
-int main(){
-    // cin.tie(0)->sync_with_stdio(0);
-    int N; cin >> N;
-    for (int i = 1; i <= N; ++i){
-        cin >> a[i];
-        for (char c : a[i]) seen.insert(c - 'a');
+int main() {
+    int N;
+    cin >> N;
+    string cows;
+    cin >> cows;
+    int infected=0;
+    for(int i = 0; i < N; i++) {
+        if (cows[i] == '1'){
+            infected++;
+        } 
     }
-    for (int i = 2; i <= N; ++i){
-        for (int j = 0; j < min(a[i].size(), a[i - 1].size()); ++j){
-            if (a[i][j] != a[i - 1][j]){
-                adj[a[i - 1][j] - 'a'].push_back(a[i][j] - 'a');
-                deg[a[i][j] - 'a']++;
-                break;
+    if (infected == N) {
+        cout << 1 << endl;   // corner case 1: all infected
+    } else if (infected <= 2) {
+        cout << infected << endl;  // corner case 2: 0, 1 or 2 infected
+    } else {
+        int min_infected = 0;
+        int left=0, right=0;
+        int last_infected = 0;
+        //get number infected cows on the left edge
+        if (cows[0] == '1') {
+            last_infected = 1;
+            while(last_infected < N && cows[last_infected] == '1')
+                last_infected++;
+            left = last_infected;
+        }
+        //get number of infected cows on the right edge
+        if (cows[N-1] == '1') {
+            last_infected = N-2;
+            while(last_infected >= 0 && cows[last_infected] == '1')
+                last_infected--;
+            right = N - last_infected - 1;
+        }
+        if (left + right == infected) {
+            // only on the left edge and/or right edge
+            if (left > 0 && right > 0) {
+                if (left == right) 
+                    min_infected = 2;
+                else if (left > right)
+                    min_infected = (left + 2*right - 2) / (2*right - 2) + 1;
+                else 
+                    min_infected = (left + 2*left - 2) / (2*left - 2) + 1;               
+            } else 
+                min_infected = 1;
+        } else {
+            // having middle groups
+            vector<int> middles;            
+            min_infected = 0;
+            int min_nights = 0;            
+            int min_size = N;
+            int size = 0;
+            for(int i = left; i < (N-right); i++){
+                if (cows[i] == '1' )
+                    size++;
+                else if (size > 0) {
+                    middles.push_back(size);
+                    if (size < min_size) 
+                        min_size = size;
+                    size = 0;
+                }
             }
-        }
-    }
-    bool multi = 0;
-    queue<int> q;
-    for (int i = 0; i < 26; ++i){
-        if (deg[i] == 0 && seen.count(i)){
-            q.push(i);
-        }
-    }
-    while (!q.empty()){
-        if (q.size() != 1) multi = 1;
-        int v = q.front(); q.pop();
-        seen.erase(v);
-        ans.push_back(v);
-        for (int to : adj[v]){
-            deg[to]--;
-            if (deg[to] == 0){
-                q.push(to);
+            if (min_size % 2 == 0) {
+                min_nights = (min_size - 2) / 2;
+            } else  {
+                min_nights =  (min_size - 1) / 2;
+            } 
+            if (left > 0) 
+                min_nights = min(min_nights, left-1);
+            if (right > 0)
+                min_nights = min(min_nights, right-1);
+            if (min_nights == 0) {
+                min_infected = infected;
+            } else {
+                min_infected = 0;
+                int growth = 2*min_nights + 1;
+                if (left > 0) {
+                    min_infected += div_ceil(left, growth);
+                }
+                if (right > 0) {
+                    min_infected += div_ceil(right, growth);
+                }
+                for (int i : middles){
+                    min_infected += div_ceil(i, growth);
+                }
             }
-        }
+        } 
+        cout << min_infected << endl;
     }
-    if (!seen.empty()) cout << "!" << '\n';
-    else if (multi) cout << "?" << '\n';
-    else{
-        for (char c : ans) cout << (char)(c + 'a');
-        cout << '\n';
-    }
+    return 0;
 }
