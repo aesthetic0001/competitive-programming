@@ -17,32 +17,29 @@ int n,maxd;
 vector<PII>tasks;
 
 bool ok(int mp){
-  queue<PII>q;
-  for(const auto &t:tasks){
-    q.emplace(t);
-  }
-  for(int d=1;d<=maxd;d++){
+  int taskct=0;
+  int carryover=0;
+  for(int d=1;d<=maxd&&taskct<tasks.size();d++){
     int ct=mp;
-    while(ct>0){
-      const auto[due,t]=q.front();
-      if(q.empty())return true;
+    while(ct>0&&taskct<tasks.size()){
+      const auto[due,t]=tasks[taskct];
       if(d>due){
         // printf("Impossible to finish task: %d\n",due);
         return false;
       }
-      if(ct>=t){
+      if(ct+carryover>=t){
         // printf("Finish task: %d | %d\n",due,t);
-        ct-=t;
-        q.pop();
+        ct-=((ct+carryover)-t);
+        taskct++;
+        carryover=0;
       }else{
         // printf("Work on task: %d %d\n",due,t);
-        q.front().second-=ct;
+        carryover=ct+carryover;
         ct=0;
       }
     }
-    if(q.empty())return true;
   }
-  return q.empty();
+  return taskct==tasks.size();
 }
 
 signed main() {
