@@ -42,7 +42,7 @@ bool ok(int mp){
     }
     if(q.empty())return true;
   }
-  return true;
+  return q.empty();
 }
 
 signed main() {
@@ -56,14 +56,18 @@ signed main() {
     tasks.eb(mp(d,t));
   }
   sort(tasks.begin(),tasks.end());
-  int l=0,r=1440;
+  int l=0,r=1441;
   while(r>l){
-    int mp=(l+r+1)/2;
+    int mp=(l+r)/2;
     if(ok(mp)){
       r=mp;
     }else{
       l=mp+1;
     }
+  }
+  if(l==1441){
+    printf("gg go next");
+    return 0;
   }
   printf("%d",r);
   return 0;
