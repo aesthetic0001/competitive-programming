@@ -8,7 +8,7 @@ def generate_test_data(num_tasks, max_deadline):
         print(t, d)
 
 if __name__ == "__main__":
-    num_tasks = 1000000
-    max_deadline = 1000000
+    num_tasks = 100000
+    max_deadline = 100000
     generate_test_data(num_tasks, max_deadline)
 
