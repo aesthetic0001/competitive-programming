@@ -13,9 +13,11 @@
 #define PII pair<int, int>
 
 using namespace std;
-int a[500001],compress[500001],N,Q;
-vector<int>compressed;
-/*unordered_map<int,set<int>>found;*/
+int a[500001],N,Q;
+// for check equality - can also coordinate compress
+int psa[500001];
+int bestLast[500001];
+unordered_map<int,int>lastOccurrence;
 
 // try bruteforce
 // can coord compress
@@ -30,33 +32,22 @@ signed main() {
   #endif
   scanf("%d %d",&N,&Q);
   for(int i=1;i<=N;i++){
-    scanf("%d",&a[i]);
-    /*if(compressed.empty()||compressed[compressed.size()-1]!=a[i]){*/
-    /*  compressed.eb(a[i]);*/
-    /*}*/
-    /*compress[i]=compressed.size()-1;*/
+    int v;
+    scanf("%d",&v);
+    a[i]=v;
+    psa[i]=psa[i-1]+((v==a[i-1])?1:0);
+    lastOccurrence[v]=i;
+    if(lastOccurrence[-v]){
+      bestLast[i]=max(bestLast[i-1],lastOccurrence[-v]);
+    }
   }
-  for(int i=0;i<Q;i++){
-    unordered_set<int>complement;
-    int l,r;scanf("%d %d",&l,&r);
-    bool isEQ=true;
-    bool zeroFound=false;
-    for(int j=l;j<=r;j++){
-      if(j>l){
-        if(a[j]!=a[j-1])isEQ=false;
-      }
-      if(a[j]==0||complement.find(a[j])!=complement.end()){
-        zeroFound=true;
-        break;
-      }
-      complement.emplace(-a[j]);
-    }
-    if(isEQ||zeroFound){
+  for(int i=0,l,r;i<Q;i++){
+    scanf("%d %d",&l,&r);
+    if(psa[r]-psa[l]==r-l||bestLast[r]>=l){
       printf("YES\n");
-      continue;
+    }else{
+      printf("NO\n");
     }
-    printf("NO\n");
   }
   return 0;
 }
-
