@@ -39,6 +39,8 @@ signed main() {
     lastOccurrence[v]=i;
     if(lastOccurrence[-v]){
       bestLast[i]=max(bestLast[i-1],lastOccurrence[-v]);
+    }else{
+      bestLast[i]=bestLast[i-1];
     }
   }
   for(int i=0,l,r;i<Q;i++){
