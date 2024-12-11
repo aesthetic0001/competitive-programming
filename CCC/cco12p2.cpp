@@ -39,9 +39,12 @@ signed main() {
     /*if(d>dis[u])continue;*/
     for(const auto&[wV,v]:g[u]){
       if(dis[v][flag]>d+wV){
+        if(flag==0){
+          dis[v][1]=dis[v][0];
+        }
         dis[v][flag]=d+wV;
         pq.emplace(forward_as_tuple(d+wV,v,flag));
-      }else if (d+wV!=dis[v][flag]){
+      }else if(d+wV!=dis[v][flag]){
         if(!flag){
            if(dis[v][1]>d+wV){
             dis[v][1]=d+wV;
