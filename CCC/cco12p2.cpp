@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 
-// #define int long long
+#define int long long
 #define mp(a,b) make_pair(a,b)
 #define eb emplace_back
 #define pb push_back
@@ -23,13 +23,13 @@ signed main() {
   #ifdef LOCAL
   freopen("sample.in","r",stdin);
   #endif
-  scanf("%d %d",&N,&M);
+  scanf("%lld %lld",&N,&M);
   for(int i=1;i<=N;i++){
-    dis1[i]=INT32_MAX;
-    dis2[i]=INT32_MAX;
+    dis1[i]=INT64_MAX;
+    dis2[i]=INT64_MAX;
   }
   for(int i=0;i<M;i++){
-    int u,v,w;scanf("%d %d %d",&u,&v,&w);
+    int u,v,w;scanf("%lld %lld %lld",&u,&v,&w);
     g[u].eb(mp(w,v));
   }
   pq.emplace(mp(0,1));
@@ -47,7 +47,7 @@ signed main() {
       }
     }
   }
-  printf("%d",dis2[N]==INT32_MAX?-1:dis2[N]);
+  printf("%lld",dis2[N]==INT64_MAX?-1:dis2[N]);
   return 0;
 }
 
