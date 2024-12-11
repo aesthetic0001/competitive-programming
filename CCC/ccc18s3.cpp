@@ -41,9 +41,9 @@ signed main() {
       while(true){
         int nY=cY+COY,nX=cX+COX;
         if(nY<0||nY>N||nX<0||nX>M)break;
-        char nC=g[nY][nX];
+        char nC=oG[nY][nX];
         if(nC=='W'||nC=='C')break;
-        if(!conveyors.count(g[nY][nX]))g[nY][nX]='W';
+        if(!conveyors.count(nC))g[nY][nX]='W';
         COY+=oY;
         COX+=oX;
       }
