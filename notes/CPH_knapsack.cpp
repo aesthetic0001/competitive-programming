@@ -19,7 +19,7 @@ using namespace std;
 int weights[5] = {0,1,3,3,5};
 int n = 12;
 // (length, weights)
-bool possible[13][5];
+bool possible[13];
 
 signed main() {
   #ifdef LOCAL
@@ -28,22 +28,24 @@ signed main() {
 
   // i: number of weights considered
   // j: the sum to form
-  possible[0][0] = true;
+  possible[0] = true;
   for(int i=1;i<=4;i++){
-    for(int j=0;j<=12;j++){
+    for(int j=12;j>=0;j--){
       // build off a previous possibility
-      if(j-weights[i]>=0)possible[j][i] |= possible[j-weights[i]][i-1];
+      if(j+weights[i]<=n && possible[j]){
+        possible[j+weights[i]] = true;
+      }
       // dont use the current weight
-      possible[j][i] |= possible[j][i-1];
+      /*possible[j] |= possible[j];*/
     }
   }
 
   for(int i=0;i<=12;i++){
-    bool ans = false;
-    for (int j=0;j<=4;j++){
-      ans |= possible[i][j];
-    }
-    printf("%d: %d\n",i,ans);
+    /*bool ans = false;*/
+    /*for (int j=0;j<=4;j++){*/
+      /*ans |= possible[i][j];*/
+    /*}*/
+    printf("%d: %d\n",i,possible[i]);
   }
 
   return 0;
