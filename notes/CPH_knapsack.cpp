@@ -29,8 +29,9 @@ signed main() {
   // i: number of weights considered
   // j: the sum to form
   possible[0] = true;
-  for(int i=1;i<=4;i++){
     for(int j=12;j>=0;j--){
+        for(int i=1;i<=4;i++){
+
       // build off a previous possibility
       if(j+weights[i]<=n && possible[j]){
         possible[j+weights[i]] = true;
