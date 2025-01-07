@@ -13,8 +13,12 @@
 #define PII pair<int, int>
 
 using namespace std;
-int pwr = 18;
-int half=1<<17;
+
+inline int gcd(int a,int b){return b?gcd(b,a%b):a;}
+inline int min(int a,int b){return a<b?a:b;}
+
+const int pwr=18;
+const int half=1<<17;
 // 2^18
 
 // min, gcd, count
@@ -28,13 +32,13 @@ struct Vertex {
   Vertex() = default;
 };
 
-Vertex st[(1<<18)+1];
+Vertex st[(1<<pwr)+1];
 int N,M;
 
 // gcd of parent node will be subset of gcd of children nodes
 // this implies there will only ever be 
 
-void merge(int idx){
+inline void merge(int idx){
   Vertex &l = st[2*idx];
   Vertex &r = st[2*idx+1];
   st[idx].minimum=min(l.minimum,r.minimum);
@@ -55,7 +59,7 @@ void merge(int idx){
   }
 }
 
-Vertex query(int original_l,int original_r) {
+inline Vertex query(int original_l,int original_r) {
   int l=original_l+half;
   int r=original_r+half;
   Vertex res(INT32_MAX,st[l].greatest_cd,0);
@@ -94,7 +98,7 @@ Vertex query(int original_l,int original_r) {
   return res;
 }
 
-void update(int i,int v){
+inline void update(int i,int v){
   i+=half;
   st[i].minimum=v;
   st[i].greatest_cd=v;
