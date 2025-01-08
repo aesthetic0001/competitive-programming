@@ -18,7 +18,7 @@ inline int min(int a,int b){return a<b?a:b;}
 using namespace std;
 
 #define HALF (1<<17)
-struct Node {int MIN;int GCD;int CNT;};
+struct Node {int MIN;int GCD;int CNT;Node(int a,int b,int c){MIN=a;GCD=b;CNT=c;}Node()=default;};
 
 Node seg[2*HALF+1];
 int n,m;
@@ -66,6 +66,45 @@ inline int M(int l,int r){
   return ans;
 }
 
+inline int G(int l,int r){
+  l+=HALF;r+=HALF;
+  int ans=seg[l].GCD;
+  while(r>l){
+    if((l&1)==1){
+      ans=gcd(ans,seg[l].GCD);
+      l++;
+    }
+    if((r&1)==0){
+      ans=min(ans,seg[r].GCD);
+      r--;
+    }
+    l>>=1;r>>=1;
+  }
+  return ans;
+}
+
+inline int Q(int l,int r){
+  int g=G(l,r);
+  l+=HALF;r+=HALF;
+  int ans=0;
+  while(r>l){
+    if((l&1)==1){
+      if(seg[l].GCD==g){
+        ans+=seg[l].CNT;
+      }
+      l++;
+    }
+    if((r&1)==0){
+      if(seg[r].GCD==g){
+        ans+=seg[r].CNT;
+      }
+      r--;
+    }
+    l>>=1;r>>=1;
+  }
+  return ans;
+}
+
 signed main() {
   #ifdef LOCAL
   freopen("sample.in","r",stdin);
@@ -78,6 +117,21 @@ signed main() {
   seg[HALF+n]=Node(INT32_MAX,seg[HALF+n-1].GCD,0);
   for(int i=(HALF+n-1)>>1;i>=1;i--){
     _comp(i);
+  }
+  while(m--){
+    char c; scanf(" %c ",&c);
+    int a,b;scanf("%d %d",&a,&b);
+    if(c=='C'){
+      update(a-1,b);
+    }else{
+      if(c=='M'){
+        printf("%d\n",M(a-1,b-1));
+      }else if(c=='G'){
+        printf("%d\n",G(a-1,b-1));
+      }else{
+        printf("%d\n",Q(a-1,b-1));
+      }
+    }
   }
   return 0;
 }
