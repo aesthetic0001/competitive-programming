@@ -17,17 +17,19 @@ inline int min(int a,int b){return a<b?a:b;}
 
 using namespace std;
 
-#define HALF (1<<17)
-struct Node {int MIN;int GCD;int CNT;Node(int a,int b,int c){MIN=a;GCD=b;CNT=c;}Node()=default;};
+#define HALF (1<<3)
+struct Node {int MIN;int GCD;int CNT;};
 
 Node seg[2*HALF+1];
 int n,m;
 
-#define l(idx) seg[(idx<<1)]
-#define r(idx) seg[(idx<<1)+1]
+#define l(idx) seg[2*idx]
+#define r(idx) seg[2*idx+1]
 
 inline void _comp(int idx){
+  /*printf("comp: %d\n",idx);*/
   Node &left=l(idx), &right=r(idx), &cur=seg[idx];
+  /*printf("%d\n",seg[idx].MIN);*/
   cur.MIN=min(left.MIN,right.MIN);
   cur.GCD=gcd(left.GCD,right.GCD);
   cur.CNT=0;
@@ -37,14 +39,16 @@ inline void _comp(int idx){
   if(cur.GCD==right.GCD){
     cur.CNT+=right.CNT;
   }
+  /*printf("%d\n",seg[idx].MIN);*/
 }
 
 inline void update(int idx,int v){
+  /*printf("upd: %d %d\n",idx,v);*/
   idx+=HALF;
   seg[idx].MIN=v;
   seg[idx].GCD=v;
   seg[idx].CNT=1;
-  while(idx>>=1 >=1){
+  while(idx>>=1){
     _comp(idx);
   }
 }
@@ -55,30 +59,28 @@ inline int M(int l,int r){
   while(r>l){
     if((l&1)==1){
       ans=min(ans,seg[l].MIN);
-      l++;
-    }
+      l=(l>>1)+1;
+    }else l>>=1;
     if((r&1)==0){
       ans=min(ans,seg[r].MIN);
-      r--;
-    }
-    l>>=1;r>>=1;
+      r=(r>>1)-1;
+    }else r>>=1;
   }
   return ans;
 }
 
 inline int G(int l,int r){
   l+=HALF;r+=HALF;
-  int ans=seg[l].GCD;
+  int ans=gcd(seg[l].GCD,seg[r].GCD);
   while(r>l){
     if((l&1)==1){
       ans=gcd(ans,seg[l].GCD);
-      l++;
-    }
+      l=(l>>1)+1;
+    }else l>>=1;
     if((r&1)==0){
-      ans=min(ans,seg[r].GCD);
-      r--;
-    }
-    l>>=1;r>>=1;
+      ans=gcd(ans,seg[r].GCD);
+      r=(r>>1)-1;
+    }else r>>=1;
   }
   return ans;
 }
@@ -92,15 +94,14 @@ inline int Q(int l,int r){
       if(seg[l].GCD==g){
         ans+=seg[l].CNT;
       }
-      l++;
-    }
+      l=(l>>1)+1;
+    }else l>>=1;
     if((r&1)==0){
       if(seg[r].GCD==g){
         ans+=seg[r].CNT;
       }
-      r--;
-    }
-    l>>=1;r>>=1;
+      r=(r>>1)-1;
+    }else r>>=1;
   }
   return ans;
 }
@@ -110,26 +111,44 @@ signed main() {
   freopen("sample.in","r",stdin);
   #endif
   scanf("%d %d",&n,&m);
-  for(int i=0;i<n;i++){
+  for(int i=1;i<=n;i++){
     int v;scanf("%d",&v);
-    seg[i+HALF]=Node(v,v,1);
+    seg[i+HALF]={v,v,1};
   }
-  seg[HALF+n]=Node(INT32_MAX,seg[HALF+n-1].GCD,0);
-  for(int i=(HALF+n-1)>>1;i>=1;i--){
+  /*for(int i=0;i<=2*HALF;i++){*/
+  /*  printf("%d ",i);*/
+  /*}*/
+  /*printf("\n");*/
+  /*for(int i=0;i<=2*HALF;i++){*/
+  /*  printf("%d ",seg[i].MIN);*/
+  /*}*/
+  /*printf("\n");*/
+  for(int i=(HALF+n)/2;i>=1;i--){
     _comp(i);
   }
+  /*for(int i=0;i<=2*HALF;i++){*/
+  /*  printf("%d ",i);*/
+  /*}*/
+  /*printf("\n");*/
+  /*for(int i=0;i<=2*HALF;i++){*/
+  /*  printf("%d ",seg[i].GCD);*/
+  /*}*/
+  /*printf("\n");*/
   while(m--){
     char c; scanf(" %c ",&c);
     int a,b;scanf("%d %d",&a,&b);
     if(c=='C'){
-      update(a-1,b);
+      update(a,b);
+  /*for(int i=0;i<=2*HALF;i++){*/
+  /*  printf("%d ",seg[i].GCD);*/
+  /*}*/
     }else{
       if(c=='M'){
-        printf("%d\n",M(a-1,b-1));
+        printf("%d\n",M(a,b));
       }else if(c=='G'){
-        printf("%d\n",G(a-1,b-1));
+        printf("%d\n",G(a,b));
       }else{
-        printf("%d\n",Q(a-1,b-1));
+        printf("%d\n",Q(a,b));
       }
     }
   }
