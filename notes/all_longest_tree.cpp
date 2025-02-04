@@ -30,7 +30,6 @@ int maxlen_1[7];
 int maxlen_2[7];
 
 void visit(int node) {
-  printf("vis %d\n",node);
   for(const auto adj:tree[node]){
     if(vis[adj])continue;
     vis[adj]=true;
@@ -51,7 +50,6 @@ void dp(int node){
   for(const auto adj:tree[node]){
     if(vis[adj])continue;
     vis[adj]=true;
-    dp(adj);
     int highest_p;
     // cannot use maxlen_1 as its parent
     if(uses_branch[node]==adj){
@@ -60,11 +58,16 @@ void dp(int node){
       highest_p=maxlen_1[node]+1;
     }
 
-    if(highest_p>maxlen_1[adj]){
-      // will not affect any children nodes, so we can just replace the parent directly
+    // if its equal, we would want to overwrite it to guarantee a high len.
+    if(highest_p>=maxlen_1[adj]){
+      // will not affect any children nodes, so we can just replace the parent directly. we do not have to worry about an invalid maxlen_2 overriding this value
       maxlen_1[adj]=highest_p;
       uses_branch[adj]=node;
+    }else if(highest_p>maxlen_2[adj]){
+      // same reasoning as above, we would want to replace it
+      maxlen_2[adj]=highest_p;
     }
+    dp(adj);
   }
 }
 
