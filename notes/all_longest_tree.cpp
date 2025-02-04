@@ -12,6 +12,12 @@
 
 #define PII pair<int, int>
 
+/**
+ * There are two types of longest paths in such a problem:
+ * You can either go through the parent node. In such a case, you can take its longest path which does not pass through the current node
+ * You can also pass through the longest child node
+**/
+
 inline int gcd(int a,int b){return b?gcd(b,a%b):a;}
 inline int min(int a,int b){return a<b?a:b;}
 
@@ -19,17 +25,14 @@ using namespace std;
 
 vector<int> tree[7]={{},{2,3,4},{1,5,6},{1},{1},{2},{2}};
 bool vis[7];
-// maximum length
 int uses_branch[7];
 int maxlen_1[7];
 int maxlen_2[7];
-int parent[7];
 
 void visit(int node) {
   printf("vis %d\n",node);
   for(const auto adj:tree[node]){
     if(vis[adj])continue;
-    parent[adj]=node;
     vis[adj]=true;
     visit(adj);
     // can use maxlen_1 as its parent
@@ -43,24 +46,41 @@ void visit(int node) {
   }
 }
 
+void dp(int node){
+  printf("vis %d\n",node);
+  for(const auto adj:tree[node]){
+    if(vis[adj])continue;
+    vis[adj]=true;
+    dp(adj);
+    int highest_p;
+    // cannot use maxlen_1 as its parent
+    if(uses_branch[node]==adj){
+      highest_p=maxlen_2[node]+1;
+    }else{
+      highest_p=maxlen_1[node]+1;
+    }
+
+    if(highest_p>maxlen_1[adj]){
+      // will not affect any children nodes, so we can just replace the parent directly
+      maxlen_1[adj]=highest_p;
+      uses_branch[adj]=node;
+    }
+  }
+}
+
 signed main() {
   #ifdef LOCAL
   freopen("sample.in","r",stdin);
   #endif
-vis[1]=true;
-uses_branch[1]=1;
-parent[1]=0;
-visit(1);
+  vis[1]=true;
+  uses_branch[1]=1;
+  visit(1);
+  for(int i=0;i<=6;i++){
+    vis[i]=false;
+  }
+  dp(1);
   for(int i=1;i<=6;i++){
-    int max_dist = maxlen_1[i];
-    // there are two types of paths: path through parent, and path through longest child
-    if (uses_branch[parent[i]]!=i){
-        // parent does not use this node as part of maxlen, so we can use
-        max_dist=max(max_dist,maxlen_1[parent[i]]+1);
-    }
-    // if parent shortest path (maxlen_1) goes through us: pick the alternative path (maxlen_2)
-    max_dist=max(max_dist,maxlen_2[parent[i]]+1);
-    printf("%d: %d\n",i,max_dist);
+    printf("%d: %d\n",i,maxlen_1[i]);
   }
   return 0;
 }
