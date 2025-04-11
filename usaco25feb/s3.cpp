@@ -22,10 +22,23 @@ int recurse(int x, int y, int cur) {
     if (x == a && y == b) return cur;
     if (x < a || y < b) return -1;
     int res;
-    if (x >= y) {
-        res = recurse(x - y, y, cur + 1);
+    // atp, only one of the conditions will be fulfilled: x > y or x < y
+    // if x == y and they are not already equal to a,b, then it will only form 0
+    if (x > y) {
+        int ops = (x-a)/y;
+        // assert(ops > 0);
+        if (ops == 0) {
+            return -1;
+        }
+        res = recurse(x - ops * y, y, cur + ops);
+    } else if (y > x) {
+        int ops = (y-b)/x;
+        if (ops == 0) {
+            return -1;
+        }
+        res = recurse(x, y - ops * x, cur + ops);
     } else {
-        res = recurse(x, y - x, cur + 1);
+        return -1;
     }
     return res;
 }
