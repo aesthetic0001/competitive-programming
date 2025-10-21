@@ -18,7 +18,7 @@ inline int min(int a,int b){return a<b?a:b;}
 using namespace std;
 
 signed main() {
-    #ifdef LOCAL
+    #ifndef ONLINE_JUDGE
     freopen("sample.in","r",stdin);
     #endif
 
