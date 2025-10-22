@@ -2,6 +2,7 @@ a.out
 a.exe
 .DS_Store
 STROJ
-.cph
+**/.cph
 .ropeproject
+.vscode
 *.bin
